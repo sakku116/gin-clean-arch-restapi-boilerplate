@@ -23,15 +23,15 @@ func (r *ResponseWriter) HTTPCustomErr(ctx *gin.Context, err error) {
 	customErr, ok := err.(*error_utils.CustomErr)
 	if ok {
 		ctx.JSON(customErr.HttpCode, rest.BaseJSONResp{
-			Error:   true,
+			Code:    customErr.HttpCode,
 			Message: customErr.Error(),
-			Detail:  "",
-			Data:    nil,
+			Detail:  customErr.Detail,
+			Data:    customErr.Data,
 		})
 		return
 	}
 	ctx.JSON(500, rest.BaseJSONResp{
-		Error:   true,
+		Code:    500,
 		Message: "internal server error",
 		Detail:  err.Error(),
 		Data:    nil,
@@ -40,7 +40,7 @@ func (r *ResponseWriter) HTTPCustomErr(ctx *gin.Context, err error) {
 
 func (r *ResponseWriter) HTTPJsonErr(ctx *gin.Context, code int, message string, detail string, data interface{}) {
 	ctx.JSON(code, rest.BaseJSONResp{
-		Error:   true,
+		Code:    code,
 		Message: message,
 		Detail:  detail,
 		Data:    data,
@@ -49,7 +49,7 @@ func (r *ResponseWriter) HTTPJsonErr(ctx *gin.Context, code int, message string,
 
 func (r *ResponseWriter) HTTPJson(ctx *gin.Context, data interface{}) {
 	ctx.JSON(200, rest.BaseJSONResp{
-		Error:   false,
+		Code:    200,
 		Message: "OK",
 		Detail:  "",
 		Data:    data,
